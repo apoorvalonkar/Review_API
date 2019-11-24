@@ -1,7 +1,6 @@
 package com.udacity.course3.reviews.entity;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name="products")
@@ -10,14 +9,17 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_id")
-    private int id;
+    private Integer productId;
 
     @Column(name = "product_name")
-    @NotNull
     private String productName;
 
-    public int getId() {
-        return id;
+    public Integer getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Integer productId) {
+        this.productId = productId;
     }
 
     public String getProductName() {
