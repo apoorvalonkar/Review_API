@@ -29,10 +29,6 @@ public class CommentsController {
     private
     ReviewRepository reviewRepository;
 
-    @Autowired
-    private
-    ProductRepository productRepository;
-
     /**
      * Creates a comment for a review.
      *
@@ -43,18 +39,20 @@ public class CommentsController {
      *
      * @param reviewId The id of the review.
      */
-    @RequestMapping(value = "/reviews/{reviewId}", method = RequestMethod.POST)
-    public ResponseEntity<?> createCommentForReview(@PathVariable("reviewId") Integer reviewId, @RequestBody Comment comment) {
+   @RequestMapping(value = "/reviews/{reviewId}", method = RequestMethod.POST)
+    public ResponseEntity<?> createCommentForReview(@PathVariable("reviewId") Integer reviewId,@Valid @RequestBody Comment comment) {
 
-        Optional<Review> optionalReview = reviewRepository.findById(reviewId);
+        Optional<Review> review = reviewRepository.findById(reviewId);
 
-        if(!optionalReview.isPresent()) {
-            return ResponseEntity.notFound().build();
+        if(!review.isPresent()) {
+            comment.setReviewId(review.get());
+            commentRepository.save(comment);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+
+        }else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        Comment.setReview(optionalReview.get());
-
-        return ResponseEntity.ok(commentRepository.save(comment));
     }
 
     /**
@@ -67,8 +65,9 @@ public class CommentsController {
      * @param reviewId The id of the review.
      * @return
      */
-    @RequestMapping(value = "/reviews/{reviewId}", method = RequestMethod.GET)
-    public ResponseEntity<List<Comment>> listCommentsForReview(@PathVariable("reviewId") Integer reviewId) {
-       return ResponseEntity.ok(commentRepository.findAllByReviewId(reviewId));
+   @RequestMapping(value = "/reviews/{reviewId}", method = RequestMethod.GET)
+    public List<?> listCommentsForReview(@PathVariable("reviewId") Integer reviewId) {
+       return commentRepository.findAllByReviewId(reviewId);
     }
+    
 }
