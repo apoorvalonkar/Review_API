@@ -10,35 +10,39 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
-    private int id;
+    private Integer commentId;
 
 
     @Column(name = "comment_text")
-    private String commentString;
+    private String commentText;
 
-    @ManyToOne
+    @ManyToOne(targetEntity = Review.class)
     @JoinColumn(name= "review_id")
     private Review review;
 
-    public int getId() {
-        return id;
+
+    public Integer getCommentId() {
+        return commentId;
     }
 
-    public Review getReview() {
+    public void setCommentId(Integer commentId) {
+        this.commentId = commentId;
+    }
+
+    public String getCommentText() {
+        return commentText;
+    }
+
+    public void setCommentText(String commentText) {
+        this.commentText = commentText;
+    }
+
+    public Review getReviewId() {
         return review;
     }
 
-    public static void setReview(Review review) {
+    public  void setReviewId(Review review) {
         this.review = review;
     }
-
-    public String getCommentString() {
-        return commentString;
-    }
-
-    public void setCommentString(String commentString) {
-        this.commentString = commentString;
-    }
-
-
 }
+
