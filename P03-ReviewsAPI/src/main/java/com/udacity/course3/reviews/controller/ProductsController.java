@@ -42,7 +42,10 @@ public class ProductsController {
     @RequestMapping(value = "/{id}")
     public ResponseEntity<?> findById(@PathVariable("id") Integer id) {
 
-        return ResponseEntity.ok(productRepository.findById(id));
+        Optional<Product> optionalProduct =productRepository.findById(id);
+        return optionalProduct
+                .map(product -> new ResponseEntity<>(product, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     /**
