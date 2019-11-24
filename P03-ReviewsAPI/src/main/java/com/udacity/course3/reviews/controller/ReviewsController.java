@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,16 +39,17 @@ public class ReviewsController {
      * @return The created review or 404 if product id is not found.
      */
     @RequestMapping(value = "/reviews/products/{productId}", method = RequestMethod.POST)
-    public ResponseEntity<?> createReviewForProduct(@PathVariable("productId") Integer productId , @RequestBody Review review) {
+    public ResponseEntity<?> createReviewForProduct(@PathVariable("productId") Integer productId ,@Valid @RequestBody Review review) {
 
         Optional<Product> optionalProduct = productRepository.findById(productId);
 
-        if (!optionalProduct.isPresent())
-            return ResponseEntity.notFound().build();
-
-        review.setProduct(optionalProduct.get());
-
-        return ResponseEntity.ok(reviewRepository.save(review));
+        if (!optionalProduct.isPresent()){
+            review.setProductId(optionalProduct.get());
+            reviewRepository.save(review);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     /**
@@ -56,14 +58,9 @@ public class ReviewsController {
      * @param productId The id of the product.
      * @return The list of reviews.
      */
-    @RequestMapping(value = "/reviews/products/{productId}", method = RequestMethod.GET)
+   @RequestMapping(value = "/reviews/products/{productId}", method = RequestMethod.GET)
     public ResponseEntity<List<?>> listReviewsForProduct(@PathVariable("productId") Integer productId) {
-
-        Optional<Product> optionalProduct = productRepository.findById(productId);
-
-        if (!optionalProduct.isPresent())
-            return ResponseEntity.notFound().build();
-
-        return ResponseEntity.ok(reviewRepository.findAllByProductId(productId));
+        
+        return new ResponseEntity<>(reviewRepository.findAllByProductId(productId),HttpStatus.OK);
+        
     }
-}
