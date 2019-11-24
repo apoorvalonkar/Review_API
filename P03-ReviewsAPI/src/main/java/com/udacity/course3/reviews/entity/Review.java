@@ -9,17 +9,21 @@ public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "review_id")
-    private int id;
+    private Integer reviewId;
 
     @Column(name = "title")
     private String reviewTitle;
 
-    @ManyToOne
+    @ManyToOne(targetEntity = Product.class)
     @JoinColumn(name = "product_id")
     private Product product;
 
-    public int getId() {
-        return id;
+    public Integer getReviewId() {
+        return reviewId;
+    }
+
+    public void setReviewId(Integer reviewId) {
+        this.reviewId = reviewId;
     }
 
     public String getReviewTitle() {
@@ -30,11 +34,11 @@ public class Review {
         this.reviewTitle = reviewTitle;
     }
 
-    public Product getProduct() {
+    public Product getProductId() {
         return product;
     }
 
-    public void setProduct(Product product) {
+    public void setProductId(Product product) {
         this.product = product;
     }
 }
